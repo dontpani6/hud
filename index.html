@@ -3,192 +3,187 @@
 <head>
 <meta charset="utf-8" />
 <style>
-body{
-  margin:0;
-  background:transparent;
-  font-family:Arial, sans-serif;
-}
+  body{margin:0;background:transparent;font-family:Arial,sans-serif;}
 
-.hud{
-  width:1100px; /* УЖЕ */
-  height:90px;
-  margin:0 auto;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:40px; /* место под таймер */
-}
+  /* общий контейнер */
+  .hud{
+    width:1100px;          /* НЕ широкий */
+    height:90px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+  }
 
-/* TEAM BLOCK */
-.team{
-  width:480px;
-  height:70px;
-  border-radius:14px;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  box-sizing:border-box;
-  background:rgba(0,0,0,.85);
-  border:3px solid rgba(255,255,255,.18);
-}
+  /* пустое место под таймер (просто воздух) */
+  .spacer{
+    width:260px;           /* ТУТ МЕСТО ПОД ТАЙМЕР */
+    height:70px;
+  }
 
-/* COLOR STRIP */
-.team.left::before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:8px;
-  background:#0a84ff;
-  border-radius:14px 0 0 14px;
-}
-.team.right::before{
-  content:"";
-  position:absolute;
-  right:0;
-  top:0;
-  bottom:0;
-  width:8px;
-  background:#ff3b3b;
-  border-radius:0 14px 14px 0;
-}
+  /* команда */
+  .team{
+    width:420px;
+    height:70px;
+    border-radius:14px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    box-sizing:border-box;
+    background:rgba(0,0,0,.85);
+    border:3px solid rgba(255,255,255,.18);
+  }
 
-.inner{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
+  /* цветная полоска */
+  .team.left::before{
+    content:"";
+    position:absolute;left:0;top:0;bottom:0;width:8px;
+    background:#0a84ff;border-radius:14px 0 0 14px;
+  }
+  .team.right::before{
+    content:"";
+    position:absolute;right:0;top:0;bottom:0;width:8px;
+    background:#ff3b3b;border-radius:0 14px 14px 0;
+  }
 
-.logo{
-  width:40px;
-  height:40px;
-  border-radius:6px;
-  overflow:hidden;
-}
-.logo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+  .inner{display:flex;align-items:center;gap:14px;position:relative;z-index:2;}
 
-.name{
-  font-weight:900;
-  font-size:28px; /* КРУПНЕЕ */
-  color:white;
-  text-transform:uppercase;
-}
+  .logo{
+    width:40px;height:40px;border-radius:6px;overflow:hidden;
+    background:rgba(255,255,255,.08);
+    border:2px solid rgba(255,255,255,.18);
+  }
+  .logo img{width:100%;height:100%;object-fit:cover;display:block;}
 
-/* MAP CELLS */
-.mpRow{
-  margin-top:6px;
-  display:flex;
-  gap:6px;
-}
+  .name{
+    font-weight:900;
+    font-size:28px;
+    color:white;
+    text-transform:uppercase;
+    line-height:1;
+  }
 
-.mp{
-  width:40px;  /* ШИРОКИЕ */
-  height:14px;
-  border-radius:4px;
-  background:#111;
-  border:2px solid rgba(255,255,255,.25);
-}
+  /* 2 широкие ячейки */
+  .mpRow{margin-top:7px;display:flex;gap:6px;}
+  .mp{
+    width:46px;              /* широкие как ты хочешь */
+    height:14px;
+    border-radius:4px;
+    background:#111;
+    border:2px solid rgba(255,255,255,.25);
+  }
+  .blue{ background:#0a84ff; }
+  .red{ background:#ff3b3b; }
 
-.blue{ background:#0a84ff; }
-.red{ background:#ff3b3b; }
-
-/* SCORE */
-.score{
-  width:60px;
-  height:48px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  font-weight:900;
-  color:white;
-  background:rgba(0,0,0,.7);
-  border:2px solid rgba(255,255,255,.25);
-}
+  /* счет */
+  .score{
+    width:60px;height:48px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;font-weight:900;color:white;
+    background:rgba(0,0,0,.70);
+    border:2px solid rgba(255,255,255,.25);
+    position:relative;z-index:2;
+  }
 </style>
 </head>
 
 <body>
-<div class="hud">
+  <div class="hud">
 
-  <!-- LEFT -->
-  <div class="team left">
-    <div class="inner">
-      <div class="logo"><img id="logo1"></div>
-      <div>
-        <div class="name" id="name1">TEAM A</div>
-        <div class="mpRow" id="mp1"></div>
+    <!-- LEFT TEAM -->
+    <div class="team left">
+      <div class="inner">
+        <div class="logo"><img id="logo1" alt=""></div>
+        <div>
+          <div class="name" id="name1">TEAM A</div>
+          <div class="mpRow" id="mp1"></div>
+        </div>
+      </div>
+      <div class="score" id="score1">0</div>
+    </div>
+
+    <!-- SPACE FOR TIMER -->
+    <div class="spacer"></div>
+
+    <!-- RIGHT TEAM -->
+    <div class="team right">
+      <div class="score" id="score2">0</div>
+      <div class="inner">
+        <div style="text-align:right;">
+          <div class="name" id="name2">TEAM B</div>
+          <div class="mpRow" id="mp2" style="justify-content:flex-end;"></div>
+        </div>
+        <div class="logo"><img id="logo2" alt=""></div>
       </div>
     </div>
-    <div class="score" id="score1">0</div>
-  </div>
 
-  <!-- RIGHT -->
-  <div class="team right">
-    <div class="score" id="score2">0</div>
-    <div class="inner">
-      <div style="text-align:right;">
-        <div class="name" id="name2">TEAM B</div>
-        <div class="mpRow" id="mp2" style="justify-content:flex-end;"></div>
-      </div>
-      <div class="logo"><img id="logo2"></div>
-    </div>
   </div>
-
-</div>
 
 <script>
-const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgOPRE9yy_FZ2fGaLpHVbU31_6ljU8seCSnk9v6xgMtywnvX7qlH-0OWrgu2qxkRWT1P0VZAzsyq5/pub?gid=0&single=true&output=csv";
+  // ВСТАВЬ СЮДА ССЫЛКУ "pub?output=csv" ИЗ GOOGLE SHEETS
+  // пример: https://docs.google.com/spreadsheets/d/XXXXX/pub?gid=0&single=true&output=csv
+  const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgOPRE9yy_FZ2fGaLpHVbU31_6ljU8seCSnk9v6xgMtywnvX7qlH-0OWrgu2qxkRWT1P0VZAzsyq5/pub?gid=0&single=true&output=csv";
 
-function parseCSV(text){
-  const lines=text.trim().split("\n");
-  const obj={};
-  for(const l of lines){
-    const p=l.split(",");
-    obj[p[0]]=p[1];
+  function clean(s){
+    return (s ?? "").toString().replace(/^\uFEFF/, "").replace(/\r/g,"").trim().replace(/^"|"$/g,"");
   }
-  return obj;
-}
 
-function renderMP(id,pattern,color){
-  const el=document.getElementById(id);
-  el.innerHTML="";
-  const p=(pattern||"00").padEnd(2,"0");
-  for(let i=0;i<2;i++){
-    const d=document.createElement("div");
-    d.className="mp"+(p[i]==="1"?" "+color:"");
-    el.appendChild(d);
+  // парсер key/value для Google CSV, который бывает с , или ;
+  function parseKV(text){
+    const lines = text.split("\n").map(clean).filter(Boolean);
+    let delim = ",";
+    // если в первой строке больше похоже на ;
+    if (lines[0] && lines[0].includes(";") && !lines[0].includes(",")) delim = ";";
+
+    const obj = {};
+    for(const line of lines){
+      const parts = line.split(delim);
+      const key = clean(parts[0]);
+      const val = clean(parts[1] ?? "");  // берём строго 2ю колонку (как у тебя A/B)
+      if(key) obj[key] = val;
+    }
+    return obj;
   }
-}
 
-async function load(){
-  const r=await fetch(DATA_URL+"&t="+Date.now());
-  const t=await r.text();
-  const o=parseCSV(t);
+  function renderMP(containerId, pattern, colorClass){
+    const el = document.getElementById(containerId);
+    el.innerHTML = "";
+    const p = clean(pattern || "00").replace(/[^01]/g,"").padEnd(2,"0").slice(0,2);
+    for(let i=0;i<2;i++){
+      const d = document.createElement("div");
+      d.className = "mp" + (p[i] === "1" ? (" " + colorClass) : "");
+      el.appendChild(d);
+    }
+  }
 
-  document.getElementById("name1").textContent=o.team1_name||"TEAM A";
-  document.getElementById("name2").textContent=o.team2_name||"TEAM B";
-  document.getElementById("score1").textContent=o.team1_score||"0";
-  document.getElementById("score2").textContent=o.team2_score||"0";
+  async function load(){
+    try{
+      const res = await fetch(DATA_URL + (DATA_URL.includes("?") ? "&" : "?") + "t=" + Date.now());
+      const txt = await res.text();
+      const o = parseKV(txt);
 
-  if(o.team1_logo)document.getElementById("logo1").src=o.team1_logo;
-  if(o.team2_logo)document.getElementById("logo2").src=o.team2_logo;
+      document.getElementById("name1").textContent = o.team1_name || "TEAM A";
+      document.getElementById("name2").textContent = o.team2_name || "TEAM B";
 
-  renderMP("mp1",o.team1_mp,"blue");
-  renderMP("mp2",o.team2_mp,"red");
-}
+      document.getElementById("score1").textContent = o.team1_score || "0";
+      document.getElementById("score2").textContent = o.team2_score || "0";
 
-load();
-setInterval(load,1000);
+      if (o.team1_logo) document.getElementById("logo1").src = o.team1_logo;
+      if (o.team2_logo) document.getElementById("logo2").src = o.team2_logo;
+
+      renderMP("mp1", o.team1_mp, "blue");
+      renderMP("mp2", o.team2_mp, "red");
+
+    } catch(e){
+      console.log("HUD load error:", e);
+    }
+  }
+
+  load();
+  setInterval(load, 1000);
 </script>
 </body>
 </html>
-
