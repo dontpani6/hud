@@ -2,102 +2,163 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  body{margin:0;background:transparent;font-family:Arial,sans-serif;}
+  :root{
+    --blue:#0a84ff;
+    --red:#ff3b3b;
+    --bg:#0b0f14;
+    --panel:#0a0d12;
+    --stroke:rgba(255,255,255,.18);
+    --shadow:0 10px 26px rgba(0,0,0,.45);
+  }
 
-  /* общий контейнер */
+  body{margin:0;background:transparent;font-family:Arial,system-ui,sans-serif;}
+
+  /* HUD container */
   .hud{
-    width:1100px;          /* НЕ широкий */
-    height:90px;
+    width:1180px;     /* уже */
+    height:92px;
     margin:0 auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:0;
   }
 
-  /* пустое место под таймер (просто воздух) */
-  .spacer{
-    width:260px;           /* ТУТ МЕСТО ПОД ТАЙМЕР */
-    height:70px;
-  }
-
-  /* команда */
-  .team{
-    width:420px;
-    height:70px;
-    border-radius:14px;
-    position:relative;
+  /* left team, spacer, right team */
+  .wrap{
+    width:1180px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 16px;
-    box-sizing:border-box;
-    background:rgba(0,0,0,.85);
-    border:3px solid rgba(255,255,255,.18);
+    gap:0;
   }
 
-  /* цветная полоска */
+  .spacer{
+    width:260px;      /* место под таймер игры */
+    height:74px;
+  }
+
+  .team{
+    width:460px;
+    height:74px;
+    border-radius:16px;
+    background:linear-gradient(180deg, rgba(18,24,34,.96), rgba(10,13,18,.96));
+    border:2px solid var(--stroke);
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    box-sizing:border-box;
+  }
+
   .team.left::before{
     content:"";
-    position:absolute;left:0;top:0;bottom:0;width:8px;
-    background:#0a84ff;border-radius:14px 0 0 14px;
+    position:absolute; inset:0;
+    background:linear-gradient(90deg, rgba(10,132,255,.55), rgba(0,0,0,0) 60%);
+    pointer-events:none;
   }
   .team.right::before{
     content:"";
-    position:absolute;right:0;top:0;bottom:0;width:8px;
-    background:#ff3b3b;border-radius:0 14px 14px 0;
+    position:absolute; inset:0;
+    background:linear-gradient(270deg, rgba(255,59,59,.55), rgba(0,0,0,0) 60%);
+    pointer-events:none;
   }
 
-  .inner{display:flex;align-items:center;gap:14px;position:relative;z-index:2;}
+  .team.left::after{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:8px;
+    background:var(--blue);
+    border-radius:16px 0 0 16px;
+  }
+  .team.right::after{
+    content:"";
+    position:absolute; right:0; top:0; bottom:0; width:8px;
+    background:var(--red);
+    border-radius:0 16px 16px 0;
+  }
+
+  .inner{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
 
   .logo{
-    width:40px;height:40px;border-radius:6px;overflow:hidden;
+    width:46px;height:46px;
+    border-radius:10px;
+    overflow:hidden;
     background:rgba(255,255,255,.08);
     border:2px solid rgba(255,255,255,.18);
+    flex:0 0 auto;
   }
   .logo img{width:100%;height:100%;object-fit:cover;display:block;}
 
+  .texts{min-width:0;}
   .name{
-    font-weight:900;
-    font-size:28px;
-    color:white;
+    color:#fff;
+    font-weight:1000;
+    font-size:26px;
+    letter-spacing:.6px;
     text-transform:uppercase;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:300px;
     line-height:1;
   }
 
-  /* 2 широкие ячейки */
-  .mpRow{margin-top:7px;display:flex;gap:6px;}
-  .mp{
-    width:46px;              /* широкие как ты хочешь */
-    height:14px;
-    border-radius:4px;
-    background:#111;
-    border:2px solid rgba(255,255,255,.25);
+  /* 2 wide cells */
+  .mpRow{
+    margin-top:8px;
+    display:flex;
+    gap:8px;
   }
-  .blue{ background:#0a84ff; }
-  .red{ background:#ff3b3b; }
+  .mp{
+    width:54px;
+    height:14px;
+    border-radius:5px;
+    background:#0a0d12;
+    border:2px solid rgba(255,255,255,.18);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+    opacity:.95;
+  }
+  .mp.blue{ background:linear-gradient(180deg, rgba(10,132,255,1), rgba(7,92,182,1)); border-color:rgba(255,255,255,.25); }
+  .mp.red{  background:linear-gradient(180deg, rgba(255,59,59,1), rgba(180,26,26,1)); border-color:rgba(255,255,255,.25); }
 
-  /* счет */
+  /* Score */
   .score{
-    width:60px;height:48px;border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:28px;font-weight:900;color:white;
-    background:rgba(0,0,0,.70);
-    border:2px solid rgba(255,255,255,.25);
-    position:relative;z-index:2;
+    position:relative;
+    z-index:2;
+    width:66px;height:52px;
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35));
+    border:2px solid rgba(255,255,255,.20);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    font-weight:1000;
+    letter-spacing:.5px;
   }
 </style>
 </head>
 
 <body>
-  <div class="hud">
-
-    <!-- LEFT TEAM -->
+<div class="hud">
+  <div class="wrap">
+    <!-- LEFT -->
     <div class="team left">
       <div class="inner">
         <div class="logo"><img id="logo1" alt=""></div>
-        <div>
+        <div class="texts">
           <div class="name" id="name1">TEAM A</div>
           <div class="mpRow" id="mp1"></div>
         </div>
@@ -105,44 +166,54 @@
       <div class="score" id="score1">0</div>
     </div>
 
-    <!-- SPACE FOR TIMER -->
+    <!-- SPACE FOR IN-GAME TIMER -->
     <div class="spacer"></div>
 
-    <!-- RIGHT TEAM -->
+    <!-- RIGHT -->
     <div class="team right">
       <div class="score" id="score2">0</div>
-      <div class="inner">
-        <div style="text-align:right;">
+      <div class="inner" style="flex-direction:row-reverse;">
+        <div class="logo"><img id="logo2" alt=""></div>
+        <div class="texts" style="text-align:right;">
           <div class="name" id="name2">TEAM B</div>
           <div class="mpRow" id="mp2" style="justify-content:flex-end;"></div>
         </div>
-        <div class="logo"><img id="logo2" alt=""></div>
       </div>
     </div>
-
   </div>
+</div>
 
 <script>
-  // ВСТАВЬ СЮДА ССЫЛКУ "pub?output=csv" ИЗ GOOGLE SHEETS
-  // пример: https://docs.google.com/spreadsheets/d/XXXXX/pub?gid=0&single=true&output=csv
+  // ВСТАВЬ СЮДА СВОЮ ссылку вида ...output=csv
   const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgOPRE9yy_FZ2fGaLpHVbU31_6ljU8seCSnk9v6xgMtywnvX7qlH-0OWrgu2qxkRWT1P0VZAzsyq5/pub?gid=0&single=true&output=csv";
 
+  // состояние, чтобы не перерисовывать одно и то же и не мигать
+  let lastHash = "";
+  let lastLogo1 = "";
+  let lastLogo2 = "";
+
   function clean(s){
-    return (s ?? "").toString().replace(/^\uFEFF/, "").replace(/\r/g,"").trim().replace(/^"|"$/g,"");
+    return (s ?? "").toString()
+      .replace(/^\uFEFF/, "")
+      .replace(/\r/g, "")
+      .trim()
+      .replace(/^"|"$/g, "");
   }
 
-  // парсер key/value для Google CSV, который бывает с , или ;
   function parseKV(text){
     const lines = text.split("\n").map(clean).filter(Boolean);
-    let delim = ",";
-    // если в первой строке больше похоже на ;
-    if (lines[0] && lines[0].includes(";") && !lines[0].includes(",")) delim = ";";
+
+    // Google CSV почти всегда с запятыми, но на всякий случай:
+    const first = lines[0] || "";
+    const delim = (first.includes(";") && !first.includes(",")) ? ";" : ",";
 
     const obj = {};
     for(const line of lines){
       const parts = line.split(delim);
+
+      // Берем строго A=key, B=value (как у тебя в табличке)
       const key = clean(parts[0]);
-      const val = clean(parts[1] ?? "");  // берём строго 2ю колонку (как у тебя A/B)
+      const val = clean(parts[1] ?? "");
       if(key) obj[key] = val;
     }
     return obj;
@@ -150,8 +221,10 @@
 
   function renderMP(containerId, pattern, colorClass){
     const el = document.getElementById(containerId);
-    el.innerHTML = "";
     const p = clean(pattern || "00").replace(/[^01]/g,"").padEnd(2,"0").slice(0,2);
+
+    // строим 2 ячейки
+    el.innerHTML = "";
     for(let i=0;i<2;i++){
       const d = document.createElement("div");
       d.className = "mp" + (p[i] === "1" ? (" " + colorClass) : "");
@@ -159,23 +232,45 @@
     }
   }
 
+  function hashObj(o){
+    // простой хэш по ключам, чтобы сравнивать изменения
+    const keys = ["team1_name","team2_name","team1_score","team2_score","team1_logo","team2_logo","team1_mp","team2_mp"];
+    return keys.map(k => `${k}=${o[k]??""}`).join("|");
+  }
+
   async function load(){
     try{
-      const res = await fetch(DATA_URL + (DATA_URL.includes("?") ? "&" : "?") + "t=" + Date.now());
+      const url = DATA_URL + (DATA_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
+      const res = await fetch(url, { cache: "no-store" });
       const txt = await res.text();
       const o = parseKV(txt);
 
+      const h = hashObj(o);
+      if (h === lastHash) return; // ничего не изменилось — НЕ ТРОГАЕМ DOM (нет мерцания)
+      lastHash = h;
+
+      // тексты
       document.getElementById("name1").textContent = o.team1_name || "TEAM A";
       document.getElementById("name2").textContent = o.team2_name || "TEAM B";
-
       document.getElementById("score1").textContent = o.team1_score || "0";
       document.getElementById("score2").textContent = o.team2_score || "0";
 
-      if (o.team1_logo) document.getElementById("logo1").src = o.team1_logo;
-      if (o.team2_logo) document.getElementById("logo2").src = o.team2_logo;
-
+      // ячейки
       renderMP("mp1", o.team1_mp, "blue");
       renderMP("mp2", o.team2_mp, "red");
+
+      // лого — обновляем только если ссылка поменялась (иначе мерцает)
+      const l1 = clean(o.team1_logo);
+      const l2 = clean(o.team2_logo);
+
+      if (l1 && l1 !== lastLogo1){
+        lastLogo1 = l1;
+        document.getElementById("logo1").src = l1;
+      }
+      if (l2 && l2 !== lastLogo2){
+        lastLogo2 = l2;
+        document.getElementById("logo2").src = l2;
+      }
 
     } catch(e){
       console.log("HUD load error:", e);
@@ -183,7 +278,7 @@
   }
 
   load();
-  setInterval(load, 1000);
+  setInterval(load, 800); // можно чаще, но без мерцания
 </script>
 </body>
 </html>
