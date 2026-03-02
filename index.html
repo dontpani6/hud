@@ -2,159 +2,161 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root{
-  --blue:#0a84ff; --blue2:#075cb6;
-  --red:#ff3b3b;  --red2:#b41a1a;
-  --panelTop: rgba(18,24,34,.98);
-  --panelBot: rgba(10,13,18,.98);
-  --stroke: rgba(255,255,255,.18);
-  --shadow: 0 10px 26px rgba(0,0,0,.45);
-}
+    --blue:#0a84ff; --blue2:#075cb6;
+    --red:#ff3b3b;  --red2:#b41a1a;
 
-body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-serif; }
+    --panelTop: rgba(18,24,34,.98);
+    --panelBot: rgba(10,13,18,.98);
+    --stroke: rgba(255,255,255,.18);
+    --shadow: 0 10px 22px rgba(0,0,0,.45);
+  }
 
-/* ✅ HUD стал уже */
-.hud{
-  width:940px;         /* было 1180 */
-  height:92px;
-  margin:0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+  body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-serif; }
 
-.wrap{
-  width:940px;         /* было 1180 */
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
+  /* overall hud */
+  .hud{
+    width:820px;
+    height:80px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
 
-/* ✅ место под таймер меньше */
-.spacer{
-  width:180px;         /* было 260 */
-  height:74px;
-}
+  .wrap{
+    width:820px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
 
-/* ✅ блок команды меньше, меньше пустоты */
-.team{
-  width:380px;         /* было 460 */
-  height:74px;
-  border-radius:16px;
-  background: linear-gradient(180deg, var(--panelTop), var(--panelBot));
-  border:2px solid var(--stroke);
-  box-shadow: var(--shadow);
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 12px;
-  box-sizing:border-box;
-}
+  /* space for in-game timer */
+  .spacer{
+    width:120px;
+    height:64px;
+  }
 
-.team.left::before{
-  content:"";
-  position:absolute; inset:0;
-  background:linear-gradient(90deg, rgba(10,132,255,.55), rgba(0,0,0,0) 60%);
-  pointer-events:none;
-}
-.team.right::before{
-  content:"";
-  position:absolute; inset:0;
-  background:linear-gradient(270deg, rgba(255,59,59,.55), rgba(0,0,0,0) 60%);
-  pointer-events:none;
-}
+  /* team panel */
+  .team{
+    width:340px;
+    height:64px;
+    border-radius:14px;
+    background: linear-gradient(180deg, var(--panelTop), var(--panelBot));
+    border:2px solid var(--stroke);
+    box-shadow: var(--shadow);
+    position:relative;
+    overflow:hidden;
 
-.team.left::after{
-  content:"";
-  position:absolute; left:0; top:0; bottom:0; width:8px;
-  background:var(--blue);
-  border-radius:16px 0 0 16px;
-}
-.team.right::after{
-  content:"";
-  position:absolute; right:0; top:0; bottom:0; width:8px;
-  background:var(--red);
-  border-radius:0 16px 16px 0;
-}
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-.inner{
-  position:relative; z-index:2;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:0;
-}
+    padding:6px 10px;
+    box-sizing:border-box;
+  }
 
-.logo{
-  width:46px; height:46px;
-  border-radius:10px;
-  overflow:hidden;
-  background:rgba(255,255,255,.08);
-  border:2px solid rgba(255,255,255,.18);
-  flex:0 0 auto;
-}
-.logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .team.left::before{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(90deg, rgba(10,132,255,.55), rgba(0,0,0,0) 62%);
+    pointer-events:none;
+  }
+  .team.right::before{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(270deg, rgba(255,59,59,.55), rgba(0,0,0,0) 62%);
+    pointer-events:none;
+  }
 
-.texts{ min-width:0; }
+  .team.left::after{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:7px;
+    background:var(--blue);
+    border-radius:14px 0 0 14px;
+  }
+  .team.right::after{
+    content:"";
+    position:absolute; right:0; top:0; bottom:0; width:7px;
+    background:var(--red);
+    border-radius:0 14px 14px 0;
+  }
 
-/* ✅ чуть меньше шрифт, чтобы не упирался */
-.name{
-  color:#fff;
-  font-weight:1000;
-  font-size:24px;      /* было 26 */
-  letter-spacing:.6px;
-  text-transform:uppercase;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:240px;     /* было 300 */
-  line-height:1;
-}
+  .inner{
+    position:relative; z-index:2;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+  }
 
-.mpRow{
-  margin-top:8px;
-  display:flex;
-  gap:8px;
-}
+  .logo{
+    width:38px; height:38px;
+    border-radius:9px;
+    overflow:hidden;
+    background:rgba(255,255,255,.08);
+    border:2px solid rgba(255,255,255,.18);
+    flex:0 0 auto;
+  }
+  .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-/* ✅ клетки можно чуть уже, чтобы влезало красиво */
-.mp{
-  width:50px;          /* было 54 */
-  height:14px;
-  border-radius:5px;
-  background:#0a0d12;
-  border:2px solid rgba(255,255,255,.18);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
-}
-.mp.blue{
-  background: linear-gradient(180deg, var(--blue), var(--blue2));
-  border-color: rgba(255,255,255,.25);
-}
-.mp.red{
-  background: linear-gradient(180deg, var(--red), var(--red2));
-  border-color: rgba(255,255,255,.25);
-}
+  .texts{ min-width:0; }
 
-/* ✅ счет чуть компактнее */
-.score{
-  position:relative; z-index:2;
-  width:62px;          /* было 66 */
-  height:50px;         /* было 52 */
-  border-radius:12px;
-  border:2px solid rgba(255,255,255,.20);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;      /* было 30 */
-  font-weight:1000;
-  letter-spacing:.5px;
-}
-.team.left .score{  background: linear-gradient(180deg, var(--blue), var(--blue2)); }
-.team.right .score{ background: linear-gradient(180deg, var(--red), var(--red2)); }
+  .name{
+    color:#fff;
+    font-weight:1000;
+    font-size:20px;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:180px;
+    line-height:1;
+  }
+
+  /* two wide cells */
+  .mpRow{
+    margin-top:6px;
+    display:flex;
+    gap:6px;
+  }
+  .mp{
+    width:40px;
+    height:12px;
+    border-radius:4px;
+    background:#0a0d12;
+    border:2px solid rgba(255,255,255,.18);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+  }
+  .mp.blue{
+    background: linear-gradient(180deg, var(--blue), var(--blue2));
+    border-color: rgba(255,255,255,.25);
+  }
+  .mp.red{
+    background: linear-gradient(180deg, var(--red), var(--red2));
+    border-color: rgba(255,255,255,.25);
+  }
+
+  /* score box colored */
+  .score{
+    position:relative; z-index:2;
+    width:52px;
+    height:42px;
+    border-radius:11px;
+    border:2px solid rgba(255,255,255,.20);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:1000;
+    letter-spacing:.4px;
+  }
+  .team.left .score{  background: linear-gradient(180deg, var(--blue), var(--blue2)); }
+  .team.right .score{ background: linear-gradient(180deg, var(--red), var(--red2)); }
 </style>
 </head>
 
@@ -162,6 +164,7 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
   <div class="hud">
     <div class="wrap">
 
+      <!-- LEFT TEAM -->
       <div class="team left">
         <div class="inner">
           <div class="logo"><img id="logo1" alt=""></div>
@@ -173,8 +176,10 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
         <div class="score" id="score1">0</div>
       </div>
 
+      <!-- SPACE FOR IN-GAME TIMER -->
       <div class="spacer"></div>
 
+      <!-- RIGHT TEAM -->
       <div class="team right">
         <div class="score" id="score2">0</div>
         <div class="inner" style="flex-direction:row-reverse;">
@@ -190,25 +195,25 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
   </div>
 
 <script>
-  // ВСТАВЬ СЮДА URL веб-приложения Apps Script (…/exec)
+  // 👉 ВСТАВЬ СЮДА URL веб-приложения Apps Script (…/exec), которое отдаёт JSON
   const API_URL = "https://script.google.com/macros/s/AKfycbzLF-gX2lqds1UBgDrLFTZkpzup_K_8WWCWnjwgDVAQIRqHOUBPtEbugVESBy5U2EstyQ/exec";
 
+  // анти-мерцание: один запрос за раз + игнор старых ответов
+  let inFlight = false;
+  let reqId = 0;
   let lastApplied = "";
   let lastLogo1 = "";
   let lastLogo2 = "";
 
-  function clean(s){
-    return (s ?? "").toString().trim();
-  }
+  function clean(s){ return (s ?? "").toString().trim(); }
 
   function renderMP(containerId, pattern, colorClass){
     const el = document.getElementById(containerId);
     const p = clean(pattern || "00").replace(/[^01]/g,"").padEnd(2,"0").slice(0,2);
 
-    // обновляем только если реально изменилось, чтобы не мигало
-    const next = `mp:${p}:${colorClass}`;
-    if (el.dataset.state === next) return;
-    el.dataset.state = next;
+    const state = `${p}:${colorClass}`;
+    if (el.dataset.state === state) return;
+    el.dataset.state = state;
 
     el.innerHTML = "";
     for(let i=0;i<2;i++){
@@ -224,15 +229,13 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
   }
 
   function apply(o){
+    const n1 = o.team1_name || "TEAM A";
+    const n2 = o.team2_name || "TEAM B";
     const s1 = o.team1_score ?? "0";
     const s2 = o.team2_score ?? "0";
 
-    // тексты — ставим только если поменялись
-    const n1 = o.team1_name || "TEAM A";
-    const n2 = o.team2_name || "TEAM B";
     if (document.getElementById("name1").textContent !== n1) document.getElementById("name1").textContent = n1;
     if (document.getElementById("name2").textContent !== n2) document.getElementById("name2").textContent = n2;
-
     if (document.getElementById("score1").textContent !== s1) document.getElementById("score1").textContent = s1;
     if (document.getElementById("score2").textContent !== s2) document.getElementById("score2").textContent = s2;
 
@@ -242,7 +245,6 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
     const l1 = clean(o.team1_logo);
     const l2 = clean(o.team2_logo);
 
-    // лого — только если ссылка поменялась
     if (l1 && l1 !== lastLogo1){
       lastLogo1 = l1;
       document.getElementById("logo1").src = l1;
@@ -254,20 +256,28 @@ body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-seri
   }
 
   async function load(){
+    if (inFlight) return;
+    inFlight = true;
+
+    const myId = ++reqId;
     try{
       const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
       const res = await fetch(url, { cache:"no-store" });
+
+      // если уже есть более новый запрос — игнорим
+      if (myId !== reqId) return;
+
       const o = await res.json();
 
       const snap = snapshot(o);
-      if (snap === lastApplied) return;
-
-      // с Apps Script обычно не "флапает", поэтому применяем сразу
-      lastApplied = snap;
-      apply(o);
-
+      if (snap !== lastApplied){
+        lastApplied = snap;
+        apply(o);
+      }
     } catch(e){
       console.log("HUD load error:", e);
+    } finally {
+      inFlight = false;
     }
   }
 
