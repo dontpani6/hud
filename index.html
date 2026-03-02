@@ -2,25 +2,20 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root{
-    --blue:#0a84ff;
-    --blue2:#075cb6;
-    --red:#ff3b3b;
-    --red2:#b41a1a;
-
-    --panelTop: rgba(18,24,34,.96);
-    --panelBot: rgba(10,13,18,.96);
+    --blue:#0a84ff; --blue2:#075cb6;
+    --red:#ff3b3b;  --red2:#b41a1a;
+    --panelTop: rgba(18,24,34,.98);
+    --panelBot: rgba(10,13,18,.98);
     --stroke: rgba(255,255,255,.18);
     --shadow: 0 10px 26px rgba(0,0,0,.45);
   }
 
   body{ margin:0; background:transparent; font-family: Arial, system-ui, sans-serif; }
 
-  /* HUD size */
   .hud{
-    width:1180px;     /* общий размер HUD */
+    width:1180px;
     height:92px;
     margin:0 auto;
     display:flex;
@@ -35,13 +30,12 @@
     justify-content:space-between;
   }
 
-  /* Space under in-game timer */
+  /* место под таймер в игре */
   .spacer{
-    width:260px;      /* МЕСТО ПОД ТАЙМЕР (меняй если надо) */
+    width:260px;  /* меняй под свой таймер */
     height:74px;
   }
 
-  /* Team panel */
   .team{
     width:460px;
     height:74px;
@@ -58,7 +52,6 @@
     box-sizing:border-box;
   }
 
-  /* Soft gradient inside */
   .team.left::before{
     content:"";
     position:absolute; inset:0;
@@ -72,7 +65,6 @@
     pointer-events:none;
   }
 
-  /* Side color strip */
   .team.left::after{
     content:"";
     position:absolute; left:0; top:0; bottom:0; width:8px;
@@ -119,7 +111,6 @@
     line-height:1;
   }
 
-  /* 2 wide cells (map points) */
   .mpRow{
     margin-top:8px;
     display:flex;
@@ -142,7 +133,6 @@
     border-color: rgba(255,255,255,.25);
   }
 
-  /* Score */
   .score{
     position:relative; z-index:2;
     width:66px; height:52px;
@@ -156,13 +146,8 @@
     font-weight:1000;
     letter-spacing:.5px;
   }
-  /* colored score background like BSC */
-  .team.left .score{
-    background: linear-gradient(180deg, var(--blue), var(--blue2));
-  }
-  .team.right .score{
-    background: linear-gradient(180deg, var(--red), var(--red2));
-  }
+  .team.left .score{  background: linear-gradient(180deg, var(--blue), var(--blue2)); }
+  .team.right .score{ background: linear-gradient(180deg, var(--red), var(--red2)); }
 </style>
 </head>
 
@@ -170,7 +155,6 @@
   <div class="hud">
     <div class="wrap">
 
-      <!-- LEFT TEAM -->
       <div class="team left">
         <div class="inner">
           <div class="logo"><img id="logo1" alt=""></div>
@@ -182,10 +166,8 @@
         <div class="score" id="score1">0</div>
       </div>
 
-      <!-- SPACE FOR IN-GAME TIMER -->
       <div class="spacer"></div>
 
-      <!-- RIGHT TEAM -->
       <div class="team right">
         <div class="score" id="score2">0</div>
         <div class="inner" style="flex-direction:row-reverse;">
@@ -201,46 +183,25 @@
   </div>
 
 <script>
-  // ВСТАВЬ СВОЮ Google Sheets publish CSV ссылку:
-  // пример: https://docs.google.com/spreadsheets/d/XXXXX/pub?gid=0&single=true&output=csv
-  const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgOPRE9yy_FZ2fGaLpHVbU31_6ljU8seCSnk9v6xgMtywnvX7qlH-0OWrgu2qxkRWT1P0VZAzsyq5/pub?gid=0&single=true&output=csv";
+  // ВСТАВЬ СЮДА URL веб-приложения Apps Script (…/exec)
+  const API_URL = "https://script.google.com/macros/s/AKfycbzLF-gX2lqds1UBgDrLFTZkpzup_K_8WWCWnjwgDVAQIRqHOUBPtEbugVESBy5U2EstyQ/exec";
 
-  // Анти-мерцание: применяем только "стабильный" снимок (2 одинаковых подряд)
-  let lastAppliedSnapshot = "";
-  let pendingSnapshot = "";
-  let pendingCount = 0;
-
-  // Чтобы лого не перезагружались каждый тик
+  let lastApplied = "";
   let lastLogo1 = "";
   let lastLogo2 = "";
 
   function clean(s){
-    return (s ?? "").toString()
-      .replace(/^\uFEFF/, "")
-      .replace(/\r/g, "")
-      .trim()
-      .replace(/^"|"$/g, "");
-  }
-
-  function parseKV(text){
-    const lines = text.split("\n").map(clean).filter(Boolean);
-    const first = lines[0] || "";
-    const delim = (first.includes(";") && !first.includes(",")) ? ";" : ",";
-
-    const obj = {};
-    for(const line of lines){
-      const parts = line.split(delim);
-      // берём A=key, B=value
-      const key = clean(parts[0]);
-      const val = clean(parts[1] ?? "");
-      if(key) obj[key] = val;
-    }
-    return obj;
+    return (s ?? "").toString().trim();
   }
 
   function renderMP(containerId, pattern, colorClass){
     const el = document.getElementById(containerId);
     const p = clean(pattern || "00").replace(/[^01]/g,"").padEnd(2,"0").slice(0,2);
+
+    // обновляем только если реально изменилось, чтобы не мигало
+    const next = `mp:${p}:${colorClass}`;
+    if (el.dataset.state === next) return;
+    el.dataset.state = next;
 
     el.innerHTML = "";
     for(let i=0;i<2;i++){
@@ -251,17 +212,22 @@
   }
 
   function snapshot(o){
-    // только важные поля
     const keys = ["team1_name","team2_name","team1_score","team2_score","team1_logo","team2_logo","team1_mp","team2_mp"];
     return keys.map(k => `${k}=${o[k] ?? ""}`).join("|");
   }
 
   function apply(o){
-    document.getElementById("name1").textContent = o.team1_name || "TEAM A";
-    document.getElementById("name2").textContent = o.team2_name || "TEAM B";
+    const s1 = o.team1_score ?? "0";
+    const s2 = o.team2_score ?? "0";
 
-    document.getElementById("score1").textContent = o.team1_score || "0";
-    document.getElementById("score2").textContent = o.team2_score || "0";
+    // тексты — ставим только если поменялись
+    const n1 = o.team1_name || "TEAM A";
+    const n2 = o.team2_name || "TEAM B";
+    if (document.getElementById("name1").textContent !== n1) document.getElementById("name1").textContent = n1;
+    if (document.getElementById("name2").textContent !== n2) document.getElementById("name2").textContent = n2;
+
+    if (document.getElementById("score1").textContent !== s1) document.getElementById("score1").textContent = s1;
+    if (document.getElementById("score2").textContent !== s2) document.getElementById("score2").textContent = s2;
 
     renderMP("mp1", o.team1_mp, "blue");
     renderMP("mp2", o.team2_mp, "red");
@@ -269,11 +235,12 @@
     const l1 = clean(o.team1_logo);
     const l2 = clean(o.team2_logo);
 
-    if(l1 && l1 !== lastLogo1){
+    // лого — только если ссылка поменялась
+    if (l1 && l1 !== lastLogo1){
       lastLogo1 = l1;
       document.getElementById("logo1").src = l1;
     }
-    if(l2 && l2 !== lastLogo2){
+    if (l2 && l2 !== lastLogo2){
       lastLogo2 = l2;
       document.getElementById("logo2").src = l2;
     }
@@ -281,35 +248,16 @@
 
   async function load(){
     try{
-      // жёсткий анти-кэш
-      const url = DATA_URL
-        + (DATA_URL.includes("?") ? "&" : "?")
-        + "ts=" + Date.now()
-        + "&rnd=" + Math.random().toString(16).slice(2);
+      const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
+      const res = await fetch(url, { cache:"no-store" });
+      const o = await res.json();
 
-      const res = await fetch(url, { cache: "no-store" });
-      const txt = await res.text();
-      const o = parseKV(txt);
+      const snap = snapshot(o);
+      if (snap === lastApplied) return;
 
-      const s = snapshot(o);
-
-      // если уже применено — ничего не делаем
-      if(s === lastAppliedSnapshot) return;
-
-      // стабилизация: ждём 2 одинаковых подряд
-      if(s === pendingSnapshot){
-        pendingCount++;
-      } else {
-        pendingSnapshot = s;
-        pendingCount = 1;
-      }
-
-      // применяем как только пришло 2 подряд одинаковых
-      if(pendingCount >= 2){
-        apply(o);
-        lastAppliedSnapshot = s;
-        pendingCount = 0;
-      }
+      // с Apps Script обычно не "флапает", поэтому применяем сразу
+      lastApplied = snap;
+      apply(o);
 
     } catch(e){
       console.log("HUD load error:", e);
@@ -317,7 +265,7 @@
   }
 
   load();
-  setInterval(load, 400); // опрашиваем часто, но применяем только стабильные данные
+  setInterval(load, 500);
 </script>
 </body>
 </html>
