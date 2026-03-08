@@ -195,28 +195,34 @@
   </div>
 
 <script>
-  // 👉 ВСТАВЬ СЮДА URL веб-приложения Apps Script (…/exec), которое отдаёт JSON
   const API_URL = "https://script.google.com/macros/s/AKfycbzLF-gX2lqds1UBgDrLFTZkpzup_K_8WWCWnjwgDVAQIRqHOUBPtEbugVESBy5U2EstyQ/exec";
 
-  // анти-мерцание: один запрос за раз + игнор старых ответов
   let inFlight = false;
   let reqId = 0;
   let lastApplied = "";
   let lastLogo1 = "";
   let lastLogo2 = "";
 
-  function clean(s){ return (s ?? "").toString().trim(); }
+  function clean(v){
+    return (v ?? "").toString().trim();
+  }
+
+  function scoreValue(v){
+    if (v === 0 || v === "0") return "0";
+    const s = clean(v);
+    return s === "" ? "0" : s;
+  }
 
   function renderMP(containerId, pattern, colorClass){
     const el = document.getElementById(containerId);
-    const p = clean(pattern || "00").replace(/[^01]/g,"").padEnd(2,"0").slice(0,2);
+    const p = clean(pattern || "00").replace(/[^01]/g, "").padEnd(2, "0").slice(0, 2);
 
     const state = `${p}:${colorClass}`;
     if (el.dataset.state === state) return;
     el.dataset.state = state;
 
     el.innerHTML = "";
-    for(let i=0;i<2;i++){
+    for(let i = 0; i < 2; i++){
       const d = document.createElement("div");
       d.className = "mp" + (p[i] === "1" ? (" " + colorClass) : "");
       el.appendChild(d);
@@ -224,20 +230,34 @@
   }
 
   function snapshot(o){
-    const keys = ["team1_name","team2_name","team1_score","team2_score","team1_logo","team2_logo","team1_mp","team2_mp"];
-    return keys.map(k => `${k}=${o[k] ?? ""}`).join("|");
+    return [
+      `team1_name=${clean(o.team1_name)}`,
+      `team2_name=${clean(o.team2_name)}`,
+      `team1_score=${scoreValue(o.team1_score)}`,
+      `team2_score=${scoreValue(o.team2_score)}`,
+      `team1_logo=${clean(o.team1_logo)}`,
+      `team2_logo=${clean(o.team2_logo)}`,
+      `team1_mp=${clean(o.team1_mp)}`,
+      `team2_mp=${clean(o.team2_mp)}`
+    ].join("|");
+  }
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    const text = String(value);
+    if (el.textContent !== text) el.textContent = text;
   }
 
   function apply(o){
-    const n1 = o.team1_name || "TEAM A";
-    const n2 = o.team2_name || "TEAM B";
-    const s1 = o.team1_score ?? "0";
-    const s2 = o.team2_score ?? "0";
+    const n1 = clean(o.team1_name) || "TEAM A";
+    const n2 = clean(o.team2_name) || "TEAM B";
+    const s1 = scoreValue(o.team1_score);
+    const s2 = scoreValue(o.team2_score);
 
-    if (document.getElementById("name1").textContent !== n1) document.getElementById("name1").textContent = n1;
-    if (document.getElementById("name2").textContent !== n2) document.getElementById("name2").textContent = n2;
-    if (document.getElementById("score1").textContent !== s1) document.getElementById("score1").textContent = s1;
-    if (document.getElementById("score2").textContent !== s2) document.getElementById("score2").textContent = s2;
+    setText("name1", n1);
+    setText("name2", n2);
+    setText("score1", s1);
+    setText("score2", s2);
 
     renderMP("mp1", o.team1_mp, "blue");
     renderMP("mp2", o.team2_mp, "red");
@@ -245,11 +265,12 @@
     const l1 = clean(o.team1_logo);
     const l2 = clean(o.team2_logo);
 
-    if (l1 && l1 !== lastLogo1){
+    if (l1 !== lastLogo1){
       lastLogo1 = l1;
       document.getElementById("logo1").src = l1;
     }
-    if (l2 && l2 !== lastLogo2){
+
+    if (l2 !== lastLogo2){
       lastLogo2 = l2;
       document.getElementById("logo2").src = l2;
     }
@@ -260,16 +281,16 @@
     inFlight = true;
 
     const myId = ++reqId;
+
     try{
       const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
-      const res = await fetch(url, { cache:"no-store" });
+      const res = await fetch(url, { cache: "no-store" });
 
-      // если уже есть более новый запрос — игнорим
       if (myId !== reqId) return;
 
       const o = await res.json();
-
       const snap = snapshot(o);
+
       if (snap !== lastApplied){
         lastApplied = snap;
         apply(o);
@@ -285,4 +306,5 @@
   setInterval(load, 500);
 </script>
 </body>
+
 </html>
